@@ -188,4 +188,15 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.lastName").value("Doe"));
         verify(userService, times(1)).getUserById(eq(userId));
     }
+
+    @Test
+    public void testGetUserByIdNotFound() throws Exception {
+
+        when(userService.getUserById(anyInt())).thenReturn(null);
+
+        mockMvc.perform(get("/api/user/{userId}", 0))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$").value("User not found with id: " + 0));
+        verify(userService, times(1)).getUserById(anyInt());
+    }
 }
